@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joljak.admin.board.dao.BoardRepository">
+    <select id="selNoticeList" parameterType="SearchDto" resultType="NoticeDto">
+        SELECT X.NOTICE_ID, X.TITLE, X.VER_NO, DATE_FORMAT(X.REG_DT,'%Y.%m.%d') AS REG_DT,
+        IFNULL(( SELECT 'Y'
+        FROM NOTICE_READ_TRX
+        WHERE NOTICE_ID = X.NOTICE_ID
+        AND NOTICE_TARGET = X.NOTICE_TARGET
+        AND READER_ID = #{readerId}
+        ),'N') AS READ_YN
+        FROM NOTICE X
+        <where>
+            X.STATUS ='정상'
+            <if test="selectType != null">AND X.NOTICE_TARGET = #{selectType}</if>
+        </where>
+        ORDER BY X.REG_DT DESC, X.NOTICE_ID DESC
+        LIMIT #{start}, #{length}
+    </select>
+
+    <select id="selNotice" parameterType="NoticeDto" resultType="NoticeDto">
+        SELECT NOTICE_ID, TITLE, CONTENTS , VER_NO, DATE_FORMAT(REG_DT,'%Y.%m.%d') AS REG_DT
+        FROM NOTICE
+        <where>
+            STATUS ='정상'
+            AND NOTICE_ID = #{noticeId}
+        </where>
+    </select>
+
+
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joljak.api.file.dao.FileRepository">
+
+    <select id="selFileList" parameterType="SearchDto" resultType="FilesDto">
+        SELECT FILE_ID, ALLOC_ID, FILE_NM, URL, ORDER_SEQ, REG_DT
+        FROM FILES
+        <where>
+            1 = 1
+            <if test="fileId  != null and fileId  > 0">AND FILE_ID = #{ fileId  }</if>
+            <if test="allocId != null and allocId > 0">AND ALLOC_ID = #{ allocId }</if>
+        </where>
+        ORDER BY ORDER_SEQ, REG_DT
+    </select>
+
+    <select id="getFileInfo" parameterType="FilesDto" resultType="FilesDto">
+        SELECT FILE_ID, ALLOC_ID, FILE_NM, URL, ORDER_SEQ, REG_DT
+        FROM FILES
+        WHERE FILE_ID = #{fileId}
+    </select>
+
+
+    <insert id="insFile" parameterType="FilesDto" useGeneratedKeys="true" keyProperty="fileId">
+        INSERT INTO FILES (ALLOC_ID, FILE_NM, URL, ORDER_SEQ, REG_DT)
+        VALUES ( #{allocId}, #{fileNm}, #{url}, #{orderSeq}, NOW())
+    </insert>
+
+    <delete id="delFileByAllocId" parameterType="FilesDto">
+        DELETE FROM FILES
+        WHERE ALLOC_ID = #{allocId}
+    </delete>
+
+    <delete id="delFileByFileId" parameterType="FilesDto">
+        DELETE FROM FILES
+        WHERE FILE_ID = #{fileId}
+    </delete>
+
+    <select id="selAllocCarFileList" parameterType="SearchDto" resultType="FilesDto">
+        SELECT FILE_ID, ALLOC_ID, FILE_NM, URL, ORDER_SEQ, REG_DT
+        FROM FILES
+        <where>
+            ALLOC_ID = ( SELECT ALLOC_ID
+            FROM ALLOCATION
+            <where>CAR_ID = ( SELECT car_id
+                FROM ALLOCATION
+                WHERE alloc_id = #{allocId}
+                )
+                AND ALLOC_TYPE='반납'
+                AND STATUS='50'
+                AND ALLOC_DT <![CDATA[<=]]> NOW()
+            </where>
+            ORDER BY ALLOC_DT DESC LIMIT 1
+            )
+        </where>
+        ORDER BY ORDER_SEQ, REG_DT
+    </select>
+
+    <select id="selUserProfile" parameterType="SearchDto" resultType="FilesDto">
+        SELECT IFNULL(Y.FILE_ID,0) AS FILE_ID , Y.FILE_NM, Y.URL
+        FROM SVC_USER X, FILES Y
+        WHERE X.USER_ID = #{userId}
+        AND X.PROFILE_FILE = Y.FILE_ID
+    </select>
+</mapper>

@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joljak.admin.user.dao.UserRepository">
+    <!-- Emp -->
+    <select id="cntTotalEmp" parameterType="SearchDto" resultType="int">
+        SELECT COUNT(EMP_ID) AS cnt FROM EMP
+        <if test="empId != null">
+            WHERE EMP_ID = #{empId}
+        </if>
+    </select>
+
+    <select id="cntFilterdEmp" parameterType="SearchDto" resultType="int">
+        SELECT COUNT(EMP_ID) AS cnt FROM EMP
+        WHERE EMP_ID != 'sys_admin'
+        <if test="empNm != null">AND EMP_NM LIKE CONCAT('%', #{empNm}, '%')</if>
+        <if test="position != null">AND POSITION = #{position}</if>
+        <if test="empMobile != null">AND EMP_MOBILE LIKE CONCAT('%', #{empMobile}, '%')</if>
+        <if test="joinDate != null">AND JOIN_DATE = #{joinDate}</if>
+        <if test="retireDate != null">AND RETIRE_DATE = #{retireDate}</if>
+        <if test="status  != null and status != 'ALL'">AND STATUS = #{status}</if>
+    </select>
+
+    <select id="selEmpList" parameterType="SearchDto" resultType="EmpDto">
+        SELECT EMP_ID, EMP_MOBILE, EMP_NM, PWD, POSITION
+        , AUTHORITY, JOIN_DATE, RETIRE_DATE, INIT_URL, LIST_CNT
+        , COMP_CD, STATUS, VER_NO, REG_DT, LOCK_YN
+        FROM EMP X
+        WHERE EMP_ID != 'sys_admin'
+        <if test="empNm != null">AND EMP_NM LIKE CONCAT('%', #{empNm}, '%')</if>
+        <if test="position != null">AND POSITION = #{position}</if>
+        <if test="empMobile != null">AND EMP_MOBILE LIKE CONCAT('%', #{empMobile}, '%')</if>
+        <if test="joinDate != null">AND JOIN_DATE = #{joinDate}</if>
+        <if test="retireDate != null">AND RETIRE_DATE = #{retireDate}</if>
+        <if test="status  != null and status != 'ALL'">AND STATUS = #{status}</if>
+        ORDER BY POSITION, EMP_NM
+    </select>
+
+    <insert id="insEmp" parameterType="EmpDto">
+        INSERT INTO EMP (EMP_ID, EMP_MOBILE, EMP_NM, PWD, POSITION
+        , AUTHORITY, JOIN_DATE, RETIRE_DATE, INIT_URL, LIST_CNT
+        , COMP_CD, STATUS, VER_NO, REG_DT, LOCK_YN)
+        VALUES ( #{empId}, #{empMobile}, #{empNm}, #{pwd}, #{position}
+        , #{authority}, #{joinDate}, #{retireDate}, #{initUrl}, #{listCnt}
+        , 'LANE4', #{status}, 1, NOW(), #{lockYn} )
+    </insert>
+
+    <update id="updEmp" parameterType="EmpDto">
+        UPDATE EMP
+        SET VER_NO = VER_NO + 1
+        <if test="empMobile != null">, EMP_MOBILE = #{empMobile}</if>
+        <if test="empNm != null">, EMP_NM = #{empNm}</if>
+        <if test="pwd != null">, PWD = #{pwd}</if>
+        <if test="position != null">, POSITION = #{position}</if>
+        <if test="authority != null">, AUTHORITY = #{authority}</if>
+        <if test="joinDate != null">, JOIN_DATE = #{joinDate}</if>
+        <if test="retireDate != null">, RETIRE_DATE = #{retireDate}</if>
+        <if test="initUrl != null">, INIT_URL = #{initUrl}</if>
+        <if test="listCnt != null">, LIST_CNT = #{listCnt}</if>
+        <if test="compCd != null">, COMP_CD = #{compCd}</if>
+        <if test="status != null">, STATUS = #{status}</if>
+        <if test="lockYn != null">, LOCK_YN = #{lockYn}</if>
+        WHERE EMP_ID = #{empId}
+        AND STATUS = #{chkStatus}
+        AND VER_NO = #{verNo}
+    </update>
+
+    <!-- SVC_USER -->
+    <select id="cntTotalSvcUserByMobile" parameterType="SearchDto" resultType="int">
+        SELECT COUNT(USER_ID) AS cnt FROM SVC_USER
+        <if test="userMobile != null">
+            WHERE USER_ID = (SELECT USER_ID
+            FROM (SELECT USER_ID
+            FROM SVC_USER
+            WHERE USER_MOBILE = #{userMobile}
+            AND STATUS = #{status}) as temp)
+        </if>
+    </select>
+
+    <select id="cntTotalSvcUserByEmail" parameterType="SearchDto" resultType="int">
+        SELECT COUNT(USER_ID) AS cnt FROM SVC_USER
+        <if test="userEmail != null">
+            WHERE USER_ID = (SELECT USER_ID
+            FROM (SELECT USER_ID
+            FROM SVC_USER
+            WHERE USER_EMAIL = #{userEmail}
+            AND STATUS = #{status}) as temp)
+        </if>
+    </select>
+    <select id="cntFilterdSvcUser" parameterType="SearchDto" resultType="int">
+        SELECT COUNT(USER_ID) AS cnt FROM SVC_USER
+        WHERE 1 = 1
+        <if test="userMobile     != null">AND USER_MOBILE = #{userMobile    }</if>
+        <if test="userNm         != null">AND USER_NM LIKE CONCAT('%', #{userNm}, '%')</if>
+        <if test="userEmail      != null">AND USER_EMAIL = #{userEmail     }</if>
+        <if test="birthday       != null">AND BIRTHDAY = #{birthday      }</if>
+        <if test="gender         != null">AND GENDER = #{gender        }</if>
+        <if test="authInfo       != null">AND AUTH_INFO = #{authInfo      }</if>
+        <if test="recommMobile   != null">AND RECOMM_MOBILE = #{recommMobile  }</if>
+        <if test="os             != null">AND OS = #{os            }</if>
+        <if test="osVer          != null">AND OS_VER = #{osVer         }</if>
+        <if test="mobileBrand    != null">AND MOBILE_BRAND = #{mobileBrand   }</if>
+        <if test="mobileModel    != null">AND MOBILE_MODEL = #{mobileModel   }</if>
+        <if test="subsId         > 0    ">AND SUBS_ID = #{subsId        }</if>
+        <if test="compCd         != null">AND COMP_CD = #{compCd        }</if>
+        <if test="registrationId != null">AND REGISTRATION_ID = #{registrationId}</if>
+        <if test="status  != null and status != 'ALL'">AND STATUS = #{status    }</if>
+    </select>
+
+    <select id="selSvcUserList" parameterType="SearchDto" resultType="SvcUserDto">
+        SELECT USER_ID, USER_MOBILE, USER_NM, USER_EMAIL, PWD
+        , BIRTHDAY, GENDER, AUTH_INFO, SIGNUP_DT, LEAVE_DT
+        , LEAVE_REASON, RECOMM_MOBILE, OS, TOKEN, OS_VER
+        , MOBILE_BRAND, MOBILE_MODEL, BLOCK_DT
+        , SUBS_ID, COMP_CD, REGISTRATION_ID
+        , STATUS, VER_NO, REG_DT, LANGUAGE, BLOCK_REASON
+        , PERSONAL_INFO_AGREE, PERSONAL_INFO_AGREE_DT
+        , EVT_DC_INFO_AGREE, EVT_DC_INFO_AGREE_DT
+        FROM SVC_USER
+        WHERE 1 = 1
+        <if test="userMobile     != null">AND USER_MOBILE = #{userMobile    }</if>
+        <if test="userNm         != null">AND USER_NM LIKE CONCAT('%', #{userNm}, '%')</if>
+        <if test="userEmail      != null">AND USER_EMAIL = #{userEmail     }</if>
+        <if test="birthday       != null">AND BIRTHDAY = #{birthday      }</if>
+        <if test="gender         != null">AND GENDER = #{gender        }</if>
+        <if test="authInfo       != null">AND AUTH_INFO = #{authInfo      }</if>
+        <if test="recommMobile   != null">AND RECOMM_MOBILE = #{recommMobile  }</if>
+        <if test="os             != null">AND OS = #{os            }</if>
+        <if test="osVer          != null">AND OS_VER = #{osVer         }</if>
+        <if test="mobileBrand    != null">AND MOBILE_BRAND = #{mobileBrand   }</if>
+        <if test="mobileModel    != null">AND MOBILE_MODEL = #{mobileModel   }</if>
+        <if test="subsId         > 0    ">AND SUBS_ID = #{subsId        }</if>
+        <if test="compCd         != null">AND COMP_CD = #{compCd        }</if>
+        <if test="registrationId != null">AND REGISTRATION_ID = #{registrationId}</if>
+        <if test="language       != null">AND LANGUAGE = #{language      }</if>
+        <if test="status  != null and status != 'ALL'">AND STATUS = #{status    }</if>
+        ORDER BY USER_NM
+        LIMIT #{start}, #{length}
+    </select>
+
+    <insert id="insSvcUser" parameterType="SvcUserDto">
+        INSERT INTO SVC_USER (USER_MOBILE, USER_NM, USER_EMAIL, PWD
+        , BIRTHDAY, GENDER, AUTH_INFO, SIGNUP_DT, LEAVE_DT
+        , LEAVE_REASON, RECOMM_MOBILE, OS, TOKEN, OS_VER
+        , MOBILE_BRAND, MOBILE_MODEL, BLOCK_DT
+        , SUBS_ID, COMP_CD
+        , STATUS, VER_NO, REG_DT, LANGUAGE, PERSONAL_INFO_AGREE, EVT_DC_INFO_AGREE
+        <if test='personalInfoAgree != null and personalInfoAgree == "Y"'>
+            , PERSONAL_INFO_AGREE_DT
+        </if>
+        <if test='evtDcInfoAgree != null and evtDcInfoAgree == "Y"'>
+            , EVT_DC_INFO_AGREE_DT
+        </if>
+        )
+        VALUES (#{userMobile}, #{userNm}, #{userEmail}, #{pwd}
+        , #{birthday}, #{gender}, #{authInfo}, #{signupDt}, #{leaveDt}
+        , #{leaveReason}, #{recommMobile}, #{os}, #{token}, #{osVer}
+        , #{mobileBrand}, #{mobileModel}, #{blockDt}
+        , #{subsId}, #{compCd}
+        , #{status}, 1, NOW(), #{language}, #{personalInfoAgree}, #{evtDcInfoAgree}
+        <if test='personalInfoAgree != null and personalInfoAgree == "Y"'>
+            , #{personalInfoAgreeDt}
+        </if>
+        <if test='evtDcInfoAgree != null and evtDcInfoAgree == "Y"'>
+            , #{evtDcInfoAgreeDt}
+        </if>
+        )
+    </insert>
+
+    <update id="signOutSvcUser" parameterType="SvcUserDto">
+        UPDATE SVC_USER
+        SET VER_NO = VER_NO + 1
+        ,TOKEN = NULL
+        WHERE USER_ID = #{userId}
+    </update>
+
+    <update id="updSvcUser" parameterType="SvcUserDto">
+        UPDATE SVC_USER
+        SET VER_NO = VER_NO + 1
+        <if test="userMobile     != null">, USER_MOBILE = #{userMobile    }</if>
+        <if test="userNm         != null">, USER_NM = #{userNm        }</if>
+        <if test="userEmail      != null">, USER_EMAIL = #{userEmail     }</if>
+        <if test="pwd            != null">, PWD = #{pwd           }</if>
+        <if test="birthday       != null">, BIRTHDAY = #{birthday      }</if>
+        <if test="gender         != null">, GENDER = #{gender        }</if>
+        <if test="authInfo       != null">, AUTH_INFO = #{authInfo      }</if>
+        <if test="signupDt       != null">, SIGNUP_DT = #{signupDt      }</if>
+        <if test="leaveDt        != null">, LEAVE_DT = #{leaveDt       }</if>
+        <if test="leaveReason    != null">, LEAVE_REASON = #{leaveReason   }</if>
+        <if test="recommMobile   != null">, RECOMM_MOBILE = #{recommMobile  }</if>
+        <if test="os             != null">, OS = #{os            }</if>
+        <if test="token          != null">, TOKEN = #{token         }</if>
+        <if test="osVer          != null">, OS_VER = #{osVer         }</if>
+        <if test="mobileBrand    != null">, MOBILE_BRAND = #{mobileBrand   }</if>
+        <if test="mobileModel    != null">, MOBILE_MODEL = #{mobileModel   }</if>
+        <if test="blockDt        != null">, BLOCK_DT = #{blockDt       }</if>
+        <if test="subsId         > 0    ">, SUBS_ID = #{subsId        }</if>
+        <if test="compCd         != null">, COMP_CD = #{compCd        }</if>
+        <if test="registrationId != null">, REGISTRATION_ID = #{registrationId}</if>
+        <if test="status         != null">, STATUS = #{status        }</if>
+        <if test="language       != null">, LANGUAGE = #{language      }</if>
+        <if test="blockReason    != null">, BLOCK_REASON = #{blockReason   }</if>
+        <if test="lastLoginDt	 != null">, LAST_LOGIN_DT = #{lastLoginDt	  }</if>
+        <if test="refreshToken	 != null">, REFRESH_TOKEN = #{refreshToken  }</if>
+        <if test="personalInfoAgree   != null">, PERSONAL_INFO_AGREE = #{personalInfoAgree  }</if>
+        <if test="personalInfoAgreeDt != null">, PERSONAL_INFO_AGREE_DT = #{personalInfoAgreeDt}</if>
+        <if test="evtDcInfoAgree   	  != null">, EVT_DC_INFO_AGREE = #{evtDcInfoAgree     }</if>
+        <if test="evtDcInfoAgreeDt    != null">, EVT_DC_INFO_AGREE_DT = #{evtDcInfoAgreeDt   }</if>
+        WHERE VER_NO = #{verNo}
+        <if test="userId ==0 or userId ==null">AND USER_ID = (SELECT USER_ID
+            FROM (SELECT USER_ID
+            FROM SVC_USER
+            WHERE USER_MOBILE = #{userMobile}
+            AND STATUS = #{chkStatus}) as temp)
+        </if>
+        <if test="userId>0">AND USER_ID = #{userId}</if>
+    </update>
+
+    <select id="cntLeaveSvcUser" parameterType="SearchDto" resultType="int">
+        SELECT COUNT(USER_ID) AS cnt FROM SVC_USER
+        WHERE USER_ID = (SELECT USER_ID
+        FROM LEAVE_USER
+        WHERE USER_MOBILE = #{userMobile}
+        AND USER_EMAIL = #{userEmail})
+        AND DATE_ADD(LEAVE_DT, INTERVAL 30 DAY) <![CDATA[>]]> NOW()
+        AND STATUS =#{status}
+    </select>
+
+    <update id="updSvcUserLeave" parameterType="SvcUserDto">
+        UPDATE SVC_USER
+        SET USER_NM = NULL,
+        USER_MOBILE = '',
+        USER_EMAIL = '',
+        LEAVE_DT = NOW(),
+        LEAVE_REASON = #{leaveReason},
+        TOKEN = NULL,
+        STATUS ='탈퇴'
+        WHERE USER_ID = #{userId}
+        AND VER_NO = #{verNo}
+    </update>
+
+
+    <insert id="insLeaveUser" parameterType="SvcUserDto">
+        INSERT INTO LEAVE_USER (USER_ID, USER_NM, USER_EMAIL, USER_MOBILE)
+        VALUES (#{userId}, #{userNm}, #{userEmail}, #{userMobile})
+    </insert>
+    <!-- SUBSCRIBER -->
+    <select id="cntTotalSubscriber" parameterType="SearchDto" resultType="int">
+        SELECT COUNT(SUBS_ID) AS cnt
+        FROM SUBSCRIBER
+        <if test="subsMobile != null">
+            WHERE SUBS_ID = (SELECT SUBS_ID
+            FROM (SELECT SUBS_ID
+            FROM SUBSCRIBER
+            WHERE SUBS_MOBILE = #{subsMobile}
+            AND STATUS = #{status}) as temp)
+        </if>
+    </select>
+
+    <select id="cntFilterdSubscriber" parameterType="SearchDto" resultType="int">
+        SELECT COUNT(SUBS_ID) AS cnt
+        FROM SUBSCRIBER
+        <where>
+            1 = 1
+            <if test="subsId     > 0    ">AND SUBS_ID = #{subsId        }</if>
+            <if test="subsMobile != null">AND SUBS_MOBILE = #{subsMobile}</if>
+            <if test="subsNm     != null">AND SUBS_NM LIKE CONCAT('%', #{subsNm}, '%')</if>
+            <if test="subsLicense != null">AND SUBS_LICENSE= #{subsLicense}</if>
+            <if test="subsAddr1  != null">AND SUBS_ADDR1 = #{subsAddr1 }</if>
+            <if test="subsAddr2  != null">AND SUBS_ADDR2 = #{subsAddr2 }</if>
+            <if test="subsOption != null">AND SUBS_OPTION = #{subsOption}</if>
+            <if test="startDate  != null">AND START_DATE = #{startDate }</if>
+            <if test="endDate    != null">AND END_DATE = #{endDate   }</if>
+            <if test="subsFee    != null">AND SUBS_FEE = #{subsFee   }</if>
+            <if test="carId      > 0    ">AND CAR_ID = #{carId     }</if>
+            <if test="status  != null and status != 'ALL'">AND STATUS = #{status}</if>
+        </where>
+    </select>
+
+
+    <select id="getUserInfo" parameterType="SvcUserDto" resultType="SvcUserDto">
+        SELECT 'USER' AS AUTHORITY_NM
+        , USER_ID, USER_MOBILE, PWD, USER_NM, USER_EMAIL, BIRTHDAY
+        , GENDER, AUTH_INFO, OS, MOBILE_BRAND, MOBILE_MODEL, BLOCK_DT
+        , SUBS_ID, COMP_CD, REGISTRATION_ID, LANGUAGE, VER_NO, PERSONAL_INFO_AGREE, EVT_DC_INFO_AGREE, PROFILE_FILE,
+        FS.URL AS PROFILE_URL
+        , SMS_AGREE, PUSH_AGREE, EMAIL_AGREE
+        FROM SVC_USER UR
+        LEFT OUTER JOIN FILES FS
+        ON UR.PROFILE_FILE = FS.FILE_ID
+        WHERE UR.STATUS = #{status}
+        <if test="userId != null and userId >0 ">AND UR.USER_ID = #{userId}</if>
+        <if test="userMobile != null">AND UR.USER_MOBILE = #{userMobile}</if>
+        <if test="userEmail != null">AND UR.USER_EMAIL = #{userEmail}</if>
+    </select>
+
+    <update id="updSvcUserPwd" parameterType="SvcUserDto">
+        UPDATE SVC_USER
+        SET VER_NO = VER_NO + 1
+        <if test="pwd            != null">, PWD = #{pwd           }</if>
+        WHERE USER_ID = #{userId}
+    </update>
+</mapper>

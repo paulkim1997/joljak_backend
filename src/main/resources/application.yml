@@ -1,0 +1,76 @@
+spring:
+  profiles:
+    active: local
+    #active: test
+    #active: product
+---
+spring:
+  profiles: local
+  datasource:
+    # driverClassName: com.mysql.cj.jdbc.Driver
+    # driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:mysql://joljak.c6ngjautybif.ap-northeast-2.rds.amazonaws.com:3306/JOLJAK?serverTimezone=UTC&autoReconnect=true&useUnicode=true&characterEncoding=utf8
+    username: JOLJAK_DEV
+    password: joljak1234
+    hikari:
+      pool-name: hikari-cp
+      maximum-pool-size: 30
+      minimum-idle: 2
+      max-lifetime: 1200000
+      connection-init-sql: SELECT 1
+      connection-timeout: 20000
+      idle-timeout: 300000
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+
+  mvc:
+    view:
+      prefix: /
+      suffix: .html
+
+
+  jackson:
+    default-property-inclusion: NON_NULL
+
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+
+
+file:
+  upload-dir: ./uploads/
+
+restTemplate:
+  factory:
+    readTimeout: 20000
+    connectTimeout: 3000
+  httpClient:
+    maxConnTotal: 100
+    maxConnPerRoute: 5
+
+
+mybatis:
+  config-location: classpath:mybatis-config.xml
+
+logging:
+  level:
+    jdbc.sqlonly: ERROR ## 이부분 추가.
+    org.springframework.web: ERROR
+    com.zaxxer.hikari.HikariDataSource: ERROR
+  file:
+    name: logs/log
+
+server:
+  port: 8080
+
+token:
+  access: 604800000
+  refresh: 864000000

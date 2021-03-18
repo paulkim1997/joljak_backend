@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joljak.admin.code.dao.CodeRepository">
+    <resultMap type="GroupCodeDto" id="GroupMap">
+        <id column="GRP_CD" property="grpCd"/>
+        <result column="GRP_CD_NM" property="grpCdNm"/>
+        <collection ofType="CodeDto" property="detailList">
+            <id column="DTL_CD" property="dtlCd"/>
+            <result column="DTL_CD_NM" property="dtlCdNm"/>
+            <result column="VAL1" property="val1"/>
+            <result column="VAL2" property="val2"/>
+            <result column="VAL3" property="val3"/>
+            <result column="VAL4" property="val4"/>
+            <result column="VAL5" property="val5"/>
+            <result column="VAL6" property="val6"/>
+            <result column="DTL_ORDER" property="dtlOrder"/>
+        </collection>
+    </resultMap>
+
+    <!-- Group Code -->
+    <select id="selGroupCodeList" resultType="GroupCodeDto">
+        SELECT GRP_CD, GRP_CD_NM, STATUS, VER_NO, REG_DT
+        , (SELECT COUNT(DTL_CD) FROM CD_DTL WHERE CD_DTL.GRP_CD = CD_GRP.GRP_CD) AS DETAIL_COUNT
+        FROM CD_GRP
+    </select>
+
+    <select id="cntGroupCode" parameterType="String" resultType="int">
+        SELECT COUNT(GRP_CD) AS cnt
+        FROM CD_GRP
+        WHERE GRP_CD = #{value}
+    </select>
+
+    <insert id="insGroupCode" parameterType="GroupCodeDto">
+        INSERT INTO CD_GRP (GRP_CD, GRP_CD_NM, STATUS, VER_NO, REG_DT)
+        VALUES ( #{newCd}, #{grpCdNm}, #{status}, 1, NOW() )
+    </insert>
+
+    <update id="updGroupCode" parameterType="GroupCodeDto">
+        UPDATE CD_GRP
+        SET VER_NO = VER_NO + 1
+        <if test="newCd != null">, GRP_CD = #{newCd}</if>
+        <if test="grpCdNm != null">, GRP_CD_NM = #{grpCdNm}</if>
+        <if test="status != null">, STATUS = #{status}</if>
+        WHERE GRP_CD = #{grpCd} AND VER_NO = #{verNo}
+    </update>
+
+    <delete id="delGroupCode" parameterType="GroupCodeDto">    <!-- 물리삭제를 사용할 것인가? -->
+        DELETE FROM CD_GRP
+        WHERE GRP_CD = #{grpCd} AND VER_NO = #{verNo}
+    </delete>
+
+    <!-- Detail Code -->
+    <select id="selDetailCodeList" parameterType="String" resultType="CodeDto">
+        SELECT GRP_CD, DTL_CD, DTL_CD_NM, VAL1, VAL2, VAL3, VAL4
+        , DTL_ORDER, STATUS, VER_NO
+        FROM CD_DTL
+        <if test="value != null">
+            WHERE GRP_CD = #{value}
+        </if>
+        ORDER BY DTL_ORDER
+    </select>
+
+    <select id="cntGroupInDetailCode" parameterType="String" resultType="int">
+        SELECT COUNT(DTL_CD) AS cnt
+        FROM CD_DTL
+        WHERE GRP_CD = #{value}
+    </select>
+
+    <select id="cntDetailCode" parameterType="String" resultType="int">
+        SELECT COUNT(DTL_CD) AS cnt
+        FROM CD_DTL
+        WHERE DTL_CD = #{value}
+    </select>
+
+    <select id="nxtDetailCodeOrder" parameterType="String" resultType="int">
+        SELECT IFNULL(MAX(DTL_ORDER), 0) + 1 AS nextOrder
+        FROM CD_DTL
+        WHERE GRP_CD = #{value}
+    </select>
+
+    <insert id="insDetailCode" parameterType="CodeDto">
+        INSERT INTO CD_DTL (GRP_CD, DTL_CD, DTL_CD_NM, VAL1, VAL2, VAL3, VAL4
+        , DTL_ORDER, STATUS, VER_NO)
+        VALUES ( #{grpCd}, #{newCd}, #{dtlCdNm}, #{val1}, #{val2}, #{val3}, #{val4}
+        , #{dtlOrder}, #{status}, 1 )
+    </insert>
+
+    <update id="updDetailCode" parameterType="CodeDto">
+        UPDATE CD_DTL
+        SET VER_NO = VER_NO + 1
+        <if test="newCd != null">, DTL_CD = #{newCd}</if>
+        <if test="dtlCdNm != null">, DTL_CD_NM = #{dtlCdNm}</if>
+        <if test="val1 != null">, VAL1 = #{val1}</if>
+        <if test="val2 != null">, VAL2 = #{val2}</if>
+        <if test="val3 != null">, VAL3 = #{val3}</if>
+        <if test="val4 != null">, VAL4 = #{val4}</if>
+        <if test="dtlOrder != null">, DTL_ORDER = #{dtlOrder}</if>
+        <if test="status != null">, STATUS = #{status}</if>
+        WHERE GRP_CD = #{grpCd} AND DTL_CD = #{dtlCd} AND VER_NO = #{verNo}
+    </update>
+
+    <delete id="delDetailCode" parameterType="CodeDto">    <!-- 물리삭제를 사용할 것인가? -->
+        DELETE FROM CD_DTL
+        WHERE DTL_CD = #{dtlCd} AND VER_NO = #{verNo}
+    </delete>
+
+    <update id="updCodeOrdering" parameterType="CodeDto">
+        UPDATE CD_DTL
+        SET DTL_ORDER = #{dtlOrder}
+        WHERE GRP_CD = #{grpCd}
+        AND DTL_CD = #{dtlCd}
+        AND VER_NO = #{verNo}
+    </update>
+
+    <!-- 어플리케이션에서 코드 사용을 위한 부분 -->
+    <select id="selGroupCodeInDetailCodeList" parameterType="GroupCodeDto" resultMap="GroupMap">
+        SELECT grp.GRP_CD, grp.GRP_CD_NM, dtl.DTL_CD, dtl.DTL_CD_NM, dtl.VAL1
+        , dtl.VAL2, dtl.VAL3, dtl.VAL4, dtl.DTL_ORDER
+        FROM CD_GRP AS grp INNER JOIN CD_DTL AS dtl
+        WHERE grp.GRP_CD = dtl.GRP_CD
+        <if test="grpCd != null">AND grp.GRP_CD = #{grpCd}</if>
+        <if test="grpCdList != null">AND grp.GRP_CD IN
+            <foreach collection="grpCdList" item="grpCd" index="index" separator="," open="(" close=")">#{grpCd}
+            </foreach>
+        </if>
+        AND dtl.STATUS = "정상"
+        ORDER BY dtl.DTL_ORDER
+    </select>
+</mapper>

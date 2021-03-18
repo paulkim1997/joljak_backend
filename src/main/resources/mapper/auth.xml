@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.joljak.auth.dao.AuthRepository">
+    <select id="empSignIn" parameterType="String" resultType="AuthDto">
+        SELECT COMP_CD, EMP_ID, EMP_NM, PWD, POSITION, AUTHORITY, INIT_URL
+        FROM EMP
+        WHERE EMP_ID = #{value}
+        AND STATUS = '정상'
+    </select>
+
+    <select id="getEmpInfo" parameterType="EmpDto" resultType="EmpDto">
+        SELECT EMP_ID, EMP_NM, EMP_MOBILE, JOIN_DATE, STATUS, INIT_URL, LIST_CNT
+        FROM EMP
+        WHERE EMP_ID = #{empId}
+    </select>
+
+
+    <select id="getUserInfo" parameterType="String" resultType="SvcUserDto">
+        SELECT USER_ID, USER_NM, USER_EMAIL, COMP_CD, STATUS , VER_NO
+        FROM SVC_USER
+        WHERE USER_ID = #{value}
+    </select>
+
+    <select id="getSvcUserToken" parameterType="String" resultType="String">
+        SELECT TOKEN
+        FROM SVC_USER
+        WHERE USER_ID = #{value}
+    </select>
+
+
+    <select id="getSvcUserRefreshToken" parameterType="String" resultType="String">
+        SELECT REFRESH_TOKEN
+        FROM SVC_USER
+        WHERE USER_ID = #{value}
+    </select>
+
+
+</mapper>

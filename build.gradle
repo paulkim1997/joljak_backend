@@ -1,0 +1,79 @@
+plugins {
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'org.asciidoctor.convert' version '1.5.8'
+    id 'java'
+    id 'org.sonarqube' version '3.0'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.sab'
+version = '0.3'
+sourceCompatibility = '11'
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.0'
+    implementation 'org.apache.httpcomponents:httpclient:4.5'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'mysql:mysql-connector-java'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.5'
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.4'
+    compile('org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16')
+    compile("org.springframework.boot:spring-boot-starter-security")
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.0'
+    // https://mvnrepository.com/artifact/com.itextpdf/itextpdf
+    compile group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13.1'
+    compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    //스웨거 관련 의존성 추가 2020-07-07
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+
+    //firebase
+    implementation('com.google.firebase:firebase-admin:6.12.1') {
+        exclude group: 'com.google.guava', module: 'guava-jdk5'
+    }
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+test {
+    outputs.dir snippetsDir
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    dependsOn test
+}
