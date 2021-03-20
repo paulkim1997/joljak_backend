@@ -34,7 +34,8 @@ public class AuthServiceImpl implements AuthService {
         try {
             // String encodedPassword = bCryptPasswordEncoder.encode(password);
             // log.info("encodedPassword : " + encodedPassword);
-            if (bCryptPasswordEncoder.matches(password, authDto.getPwd())) {
+            //if (bCryptPasswordEncoder.matches(password, authDto.getPwd())) {
+            if(password.equals(authDto.getPwd())) {
                 return authDto;
                 // } else {
                 /*

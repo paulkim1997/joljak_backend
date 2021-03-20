@@ -52,8 +52,10 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException(ErrorCode.DUP_CHK_ERROR, "emId");
         }
         String rawPassword = dto.getPwd();
-        String encodedPassword = bCryptPasswordEncoder.encode(rawPassword);
-        dto.setPwd(encodedPassword);
+        //String encodedPassword = bCryptPasswordEncoder.encode(rawPassword);
+        //dto.setPwd(encodedPassword);
+        dto.setPwd(rawPassword);
+
         userRepository.insEmp(dto);
         return true;
     }
