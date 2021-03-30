@@ -16,5 +16,6 @@
         <mapper resource="mapper/user.xml"/>
         <mapper resource="mapper/files.xml"/>
         <mapper resource="mapper/board.xml"/>
+        <mapper resource="mapper/room.xml"/>
     </mappers>
 </configuration>
