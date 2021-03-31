@@ -1,41 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.joljak.admin.user.dao.UserRepository">
-    <!-- Emp -->
-    <select id="cntTotalEmp" parameterType="SearchDto" resultType="int">
-        SELECT COUNT(EMP_ID) AS cnt FROM EMP
-        <if test="empId != null">
-            WHERE EMP_ID = #{empId}
-        </if>
-    </select>
+<mapper namespace="com.joljak.admin.room.dao.RoomRepository">
+    <!-- ROOM -->
 
-    <select id="cntFilterdEmp" parameterType="SearchDto" resultType="int">
-        SELECT COUNT(EMP_ID) AS cnt FROM EMP
-        WHERE EMP_ID != 'sys_admin'
+    <select id="selRoomInf" parameterType="SearchDto" resultType="RoomDto">
+        SELECT ROOM_NM, TEMP, HUM, GAS
+            ,DUST, LIGHT, MEASURE_TIME
+        FROM IOT_INF
+        WHERE ROOM_NO = #{roomNo}
+          <!--
         <if test="empNm != null">AND EMP_NM LIKE CONCAT('%', #{empNm}, '%')</if>
         <if test="position != null">AND POSITION = #{position}</if>
         <if test="empMobile != null">AND EMP_MOBILE LIKE CONCAT('%', #{empMobile}, '%')</if>
         <if test="joinDate != null">AND JOIN_DATE = #{joinDate}</if>
         <if test="retireDate != null">AND RETIRE_DATE = #{retireDate}</if>
         <if test="status  != null and status != 'ALL'">AND STATUS = #{status}</if>
+            -->
     </select>
 
-    <select id="selEmpList" parameterType="SearchDto" resultType="EmpDto">
-        SELECT EMP_ID, EMP_MOBILE, EMP_NM, PWD, POSITION
-        , AUTHORITY, JOIN_DATE, RETIRE_DATE, INIT_URL, LIST_CNT
-        , COMP_CD, STATUS, VER_NO, REG_DT, LOCK_YN
-        FROM EMP X
-        WHERE EMP_ID != 'sys_admin'
-        <if test="empNm != null">AND EMP_NM LIKE CONCAT('%', #{empNm}, '%')</if>
-        <if test="position != null">AND POSITION = #{position}</if>
-        <if test="empMobile != null">AND EMP_MOBILE LIKE CONCAT('%', #{empMobile}, '%')</if>
-        <if test="joinDate != null">AND JOIN_DATE = #{joinDate}</if>
-        <if test="retireDate != null">AND RETIRE_DATE = #{retireDate}</if>
-        <if test="status  != null and status != 'ALL'">AND STATUS = #{status}</if>
-        ORDER BY POSITION, EMP_NM
+    <select id="selAllRoomInf" resultType="RoomDto">
+        SELECT * FROM IOT_INF
     </select>
-
+    <!--
     <insert id="insEmp" parameterType="EmpDto">
         INSERT INTO EMP (EMP_ID, EMP_MOBILE, EMP_NM, PWD, POSITION
         , AUTHORITY, JOIN_DATE, RETIRE_DATE, INIT_URL, LIST_CNT
@@ -64,8 +51,10 @@
         AND STATUS = #{chkStatus}
         AND VER_NO = #{verNo}
     </update>
+    -->
 
     <!-- SVC_USER -->
+    <!--
     <select id="cntTotalSvcUserByMobile" parameterType="SearchDto" resultType="int">
         SELECT COUNT(USER_ID) AS cnt FROM SVC_USER
         <if test="userMobile != null">
@@ -238,13 +227,16 @@
         WHERE USER_ID = #{userId}
         AND VER_NO = #{verNo}
     </update>
+    -->
 
 
+    <!--
     <insert id="insLeaveUser" parameterType="SvcUserDto">
         INSERT INTO LEAVE_USER (USER_ID, USER_NM, USER_EMAIL, USER_MOBILE)
         VALUES (#{userId}, #{userNm}, #{userEmail}, #{userMobile})
-    </insert>
+    </insert> -->
     <!-- SUBSCRIBER -->
+    <!--
     <select id="cntTotalSubscriber" parameterType="SearchDto" resultType="int">
         SELECT COUNT(SUBS_ID) AS cnt
         FROM SUBSCRIBER
@@ -299,5 +291,5 @@
         SET VER_NO = VER_NO + 1
         <if test="pwd            != null">, PWD = #{pwd           }</if>
         WHERE USER_ID = #{userId}
-    </update>
+    </update> -->
 </mapper>

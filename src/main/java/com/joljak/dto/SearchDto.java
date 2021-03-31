@@ -111,6 +111,9 @@ public class SearchDto extends BaseDto {
     private int callId;
 
     private int readerId;
+
+    //Room
+    private int roomNo;
 }
 
 
