@@ -5,13 +5,13 @@
     <!-- ROOM -->
 
     <select id="selRoomInf" parameterType="SearchDto" resultType="RoomDto">
-        SELECT ROOM_NM, TEMP, HUM, GAS
+        SELECT ROOM_NO, ROOM_NM, TEMP, HUM, GAS
             ,DUST, LIGHT, MEASURE_TIME
         FROM IOT_INF
-        WHERE ROOM_NO = #{roomNo}
-          <!--
-        <if test="empNm != null">AND EMP_NM LIKE CONCAT('%', #{empNm}, '%')</if>
-        <if test="position != null">AND POSITION = #{position}</if>
+        <where>
+            <if test="roomNo != null">AND ROOM_NO = #{roomNo}</if>
+        </where>
+        <!--
         <if test="empMobile != null">AND EMP_MOBILE LIKE CONCAT('%', #{empMobile}, '%')</if>
         <if test="joinDate != null">AND JOIN_DATE = #{joinDate}</if>
         <if test="retireDate != null">AND RETIRE_DATE = #{retireDate}</if>
