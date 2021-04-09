@@ -1,4 +1,4 @@
-package com.joljak.auth.constroller;
+package com.joljak.auth.controller;
 
 import com.joljak.admin.user.dao.UserRepository;
 import com.joljak.admin.user.service.UserService;
