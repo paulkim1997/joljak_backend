@@ -15,6 +15,8 @@ public interface UserService {
 
     public boolean delEmp(EmpDto dto);
 
+    public boolean changePw(EmpDto dto);
+
     //SVC_USER
     public DataTablesResponse<SvcUserDto> selSvcUserList(SearchDto dto);
 

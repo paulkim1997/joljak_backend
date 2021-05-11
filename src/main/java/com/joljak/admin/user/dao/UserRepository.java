@@ -22,6 +22,8 @@ public interface UserRepository {
 
     public void updEmp(EmpDto dto);
 
+    public void changePw(EmpDto dto);
+
     //SvcUser
     public int cntTotalSvcUserByMobile(SearchDto dto);
 

@@ -113,6 +113,22 @@ public class UserController {
         return responseDto;
     }
 
+    @ApiOperation(value = "비밀번호만 수정", notes = "비밀번호만 수정")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "\n" + "\n" + ""),
+    })
+    @RequestMapping(value = "/changePw", method = RequestMethod.POST)
+    public ResponseDto changPw(
+            @ApiParam(value = "필수 xxxx \n" + "필수 xxxx \n" + "\n")
+            @RequestBody EmpDto dto, HttpServletResponse response) {
+        logger.debug("updEmp");
+        boolean result = userService.changePw(dto);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setResult(result);
+        responseDto.setMessage(Constant.SUCCESS);
+        return responseDto;
+    }
+
     @ApiOperation(value = "임직원 삭제", notes = "임직원 삭제")
     @ApiResponses({
             @ApiResponse(code = 200, message = "\n" + "\n" + ""),

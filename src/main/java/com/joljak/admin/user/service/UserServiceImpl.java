@@ -83,6 +83,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean changePw(EmpDto dto) {
+        //기본값이 없을때의 Known Exception 처리를 수행한다
+        if (dto.getEmpId() == null || dto.getEmpId().isEmpty()) {
+            throw new BusinessException(ErrorCode.REQUIRED_MANDATORY, "empId");
+        }
+//        if (dto.getChkStatus() == null || dto.getChkStatus().isEmpty()) {
+//            throw new BusinessException(ErrorCode.REQUIRED_MANDATORY, "상태값");
+//        }
+//        if (dto.getVerNo() < 1) {
+//            throw new BusinessException(ErrorCode.REQUIRED_MANDATORY, "버전정보");
+//        }
+//        String rawPassword = dto.getPwd();
+//        if (rawPassword != null && !rawPassword.isEmpty()) {
+//            String encodedPassword = bCryptPasswordEncoder.encode(rawPassword);
+//            dto.setPwd(encodedPassword);
+//        }
+        userRepository.changePw(dto);
+        return true;
+    }
+
+    @Override
     public boolean delEmp(EmpDto dto) {
         //기본값이 없을때의 Known Exception 처리를 수행한다
         if (dto.getEmpId() == null || dto.getEmpId().isEmpty()) {

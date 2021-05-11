@@ -65,6 +65,13 @@
         AND VER_NO = #{verNo}
     </update>
 
+    <update id="changePw" parameterType="EmpDto">
+        UPDATE EMP
+        SET VER_NO = VER_NO + 1
+        <if test="pwd != null">, PWD = #{pwd}</if>
+        WHERE EMP_ID = #{empId}
+    </update>
+
     <!-- SVC_USER -->
     <select id="cntTotalSvcUserByMobile" parameterType="SearchDto" resultType="int">
         SELECT COUNT(USER_ID) AS cnt FROM SVC_USER
