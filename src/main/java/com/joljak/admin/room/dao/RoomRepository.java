@@ -21,6 +21,7 @@ public interface RoomRepository {
 
     public List<RoomDto> selAllRoomInf();
 
+
     public void insEmp(EmpDto dto);
 
     public void updEmp(EmpDto dto);

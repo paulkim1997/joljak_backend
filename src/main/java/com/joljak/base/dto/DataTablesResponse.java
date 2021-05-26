@@ -34,4 +34,5 @@ public class DataTablesResponse<T> {
     public void setArticleList(List<T> articleList) {
         this.articleList = articleList;
     }
+
 }

@@ -59,9 +59,7 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 
     //firebase
-    implementation('com.google.firebase:firebase-admin:6.12.1') {
-        exclude group: 'com.google.guava', module: 'guava-jdk5'
-    }
+    implementation 'com.google.firebase:firebase-admin:7.3.0'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {

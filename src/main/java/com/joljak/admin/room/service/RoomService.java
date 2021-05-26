@@ -6,6 +6,8 @@ import com.joljak.dto.RoomDto;
 import com.joljak.dto.SearchDto;
 import com.joljak.dto.SvcUserDto;
 
+import java.util.concurrent.ExecutionException;
+
 public interface RoomService {
     //EMP
     public DataTablesResponse<RoomDto> selRoomInfo(SearchDto dto);

@@ -1,11 +1,19 @@
 package com.joljak.admin.room.controller;
 
+import com.google.api.core.ApiFunction;
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.CollectionReference;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
 import com.joljak.admin.room.service.RoomService;
 import com.joljak.auth.service.JwtService;
 import com.joljak.base.constant.Constant;
 import com.joljak.base.dto.DataTablesResponse;
 import com.joljak.base.dto.ResponseDto;
 import com.joljak.dto.*;
+import com.joljak.firebase.FireBaseInitializer;
+import com.joljak.firebase.FireBaseInitializer;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author
@@ -33,7 +44,8 @@ import javax.servlet.http.HttpServletResponse;
 public class RoomController {
 
     private static Logger logger = LoggerFactory.getLogger(RoomController.class);
-
+    @Autowired
+    FireBaseInitializer db;
     @Resource(name = "roomService")
     private RoomService roomService;
 
@@ -60,6 +72,25 @@ public class RoomController {
             @ModelAttribute SearchDto dto) {
         logger.debug("selRoomInf");
         DataTablesResponse<RoomDto> selectList = roomService.selAllRoomInfo();
+        return selectList;
+    }
+
+    @ApiOperation(value = "실시간 방 정보 전체 조회", notes = " 실시간 방 정보 전체 조회")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "\n" + "\n" + ""),
+    })
+    @RequestMapping(value = "/selAllRoomInfFb", method = RequestMethod.GET)
+    public List<RoomDto> selAllRoomInfFb(
+            @ApiParam(value = "필수 xxxx \n" + "필수 xxxx \n" + "\n")
+            @ModelAttribute SearchDto dto) throws ExecutionException, InterruptedException {
+        logger.debug("selRoomInfFb");
+        List<RoomDto> selectList = new ArrayList<>();
+
+        CollectionReference roomInfo = db.getFirebase().collection("rooms");
+        ApiFuture<QuerySnapshot> querySnapshot = roomInfo.get();
+        for(DocumentSnapshot doc : querySnapshot.get().getDocuments()) {
+            selectList.add(doc.toObject(RoomDto.class));
+        }
         return selectList;
     }
 

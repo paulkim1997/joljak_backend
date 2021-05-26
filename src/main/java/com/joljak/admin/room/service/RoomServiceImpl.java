@@ -1,5 +1,9 @@
 package com.joljak.admin.room.service;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.CollectionReference;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
 import com.joljak.admin.room.dao.RoomRepository;
 import com.joljak.auth.dao.AuthRepository;
 import com.joljak.base.dto.DataTablesResponse;
@@ -9,9 +13,12 @@ import com.joljak.dto.EmpDto;
 import com.joljak.dto.RoomDto;
 import com.joljak.dto.SearchDto;
 import com.joljak.dto.SvcUserDto;
+import com.joljak.firebase.FireBaseInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.ExecutionException;
 
 import static com.joljak.base.error.ErrorCode.UPDATE_ERROR;
 import static com.joljak.base.error.ErrorCode.USER_NOT_FOUND;
@@ -42,6 +49,8 @@ public class RoomServiceImpl implements RoomService {
         dataTableResult.setArticleList(roomRepository.selAllRoomInf());
         return dataTableResult;
     }
+
+
     /*
     @Override
     public boolean insEmp(EmpDto dto) {

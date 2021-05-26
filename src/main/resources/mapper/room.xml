@@ -22,6 +22,8 @@
     <select id="selAllRoomInf" resultType="RoomDto">
         SELECT * FROM IOT_INF
     </select>
+
+
     <!--
     <insert id="insEmp" parameterType="EmpDto">
         INSERT INTO EMP (EMP_ID, EMP_MOBILE, EMP_NM, PWD, POSITION
