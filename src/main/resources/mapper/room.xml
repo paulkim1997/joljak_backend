@@ -5,7 +5,7 @@
     <!-- ROOM -->
 
     <select id="selRoomInf" parameterType="SearchDto" resultType="RoomDto">
-        SELECT ROOM_NO, ROOM_NM, TEMP, HUM, GAS
+        SELECT ROOM_NO, TEMP, HUM, GAS
             ,DUST, LIGHT, MEASURE_TIME
         FROM IOT_INF
         <where>
@@ -21,6 +21,7 @@
 
     <select id="selAllRoomInf" resultType="RoomDto">
         SELECT * FROM IOT_INF
+        WHERE MEASURE_TIME = ( SELECT MAX(MEASURE_TIME) FROM IOT_INF )
     </select>
 
 
