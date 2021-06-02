@@ -35,8 +35,6 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public DataTablesResponse<RoomDto> selRoomInfo(SearchDto dto) {
         DataTablesResponse<RoomDto> dataTableResult = new DataTablesResponse<>();
-        //dataTableResult.setRecordsTotal(userRepository.cntTotalEmp(null));
-        //dataTableResult.setRecordsFiltered(userRepository.cntFilterdEmp(dto));
         dataTableResult.setArticleList(roomRepository.selRoomInf(dto));
         return dataTableResult;
     }
@@ -44,14 +42,18 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public DataTablesResponse<RoomDto> selAllRoomInfo() {
         DataTablesResponse<RoomDto> dataTableResult = new DataTablesResponse<>();
-        //dataTableResult.setRecordsTotal(userRepository.cntTotalEmp(null));
-        //dataTableResult.setRecordsFiltered(userRepository.cntFilterdEmp(dto));
         dataTableResult.setArticleList(roomRepository.selAllRoomInf());
         return dataTableResult;
     }
 
+    @Override
+    public DataTablesResponse<RoomDto> selRoomStatistics(SearchDto dto) {
+        DataTablesResponse<RoomDto> dataTableResult = new DataTablesResponse<>();
+        dataTableResult.setArticleList(roomRepository.selRoomStatistics(dto));
+        return dataTableResult;
+    }
 
-    /*
+/*
     @Override
     public boolean insEmp(EmpDto dto) {
         //기본값이 없을때의 Known Exception 처리를 수행한다

@@ -19,5 +19,9 @@ public class RoomDto extends BaseDto {
     private int dust       ;
     private int light      ;
     private String measureTime;
+    private BigDecimal tempAvg;
+    private BigDecimal humAvg;
+    private BigDecimal dustAvg;
+    private BigDecimal gasAvg;
 
 }

@@ -75,22 +75,17 @@ public class RoomController {
         return selectList;
     }
 
-    @ApiOperation(value = "실시간 방 정보 전체 조회", notes = " 실시간 방 정보 전체 조회")
+    @ApiOperation(value = "방 통계 정보 조회", notes = "방 통계 정보 조회")
     @ApiResponses({
             @ApiResponse(code = 200, message = "\n" + "\n" + ""),
     })
-    @RequestMapping(value = "/selAllRoomInfFb", method = RequestMethod.GET)
-    public List<RoomDto> selAllRoomInfFb(
+    @RequestMapping(value = "/selRoomStatistics", method = RequestMethod.GET)
+    public DataTablesResponse<RoomDto> selRoomStatistics(
             @ApiParam(value = "필수 xxxx \n" + "필수 xxxx \n" + "\n")
             @ModelAttribute SearchDto dto) throws ExecutionException, InterruptedException {
-        logger.debug("selRoomInfFb");
-        List<RoomDto> selectList = new ArrayList<>();
+        logger.debug("selRoomStatistics");
 
-        CollectionReference roomInfo = db.getFirebase().collection("rooms");
-        ApiFuture<QuerySnapshot> querySnapshot = roomInfo.get();
-        for(DocumentSnapshot doc : querySnapshot.get().getDocuments()) {
-            selectList.add(doc.toObject(RoomDto.class));
-        }
+        DataTablesResponse<RoomDto> selectList = roomService.selRoomStatistics(dto);
         return selectList;
     }
 

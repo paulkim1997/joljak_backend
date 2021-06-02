@@ -14,6 +14,8 @@ public interface RoomService {
 
     public DataTablesResponse<RoomDto> selAllRoomInfo();
 
+    public DataTablesResponse<RoomDto> selRoomStatistics(SearchDto dto);
+
 /*
     public boolean dupCheckEmp(EmpDto dto);
 

@@ -21,6 +21,8 @@ public interface RoomRepository {
 
     public List<RoomDto> selAllRoomInf();
 
+    public List<RoomDto> selRoomStatistics(SearchDto dto);
+
 
     public void insEmp(EmpDto dto);
 

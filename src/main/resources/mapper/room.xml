@@ -5,18 +5,13 @@
     <!-- ROOM -->
 
     <select id="selRoomInf" parameterType="SearchDto" resultType="RoomDto">
-        SELECT ROOM_NO, TEMP, HUM, GAS
-            ,DUST, LIGHT, MEASURE_TIME
+        SELECT ROOM_NO, AVG(TEMP), AVG(HUM), AVG(GAS)
+            ,AVG(DUST), LIGHT, MEASURE_TIME
         FROM IOT_INF
         <where>
+            <if test="houseCd != null"> AND HOUSE_CD = #{houseCd}</if>
             <if test="roomNo != null">AND ROOM_NO = #{roomNo}</if>
         </where>
-        <!--
-        <if test="empMobile != null">AND EMP_MOBILE LIKE CONCAT('%', #{empMobile}, '%')</if>
-        <if test="joinDate != null">AND JOIN_DATE = #{joinDate}</if>
-        <if test="retireDate != null">AND RETIRE_DATE = #{retireDate}</if>
-        <if test="status  != null and status != 'ALL'">AND STATUS = #{status}</if>
-            -->
     </select>
 
     <select id="selAllRoomInf" resultType="RoomDto">
@@ -24,6 +19,57 @@
         WHERE MEASURE_TIME = ( SELECT MAX(MEASURE_TIME) FROM IOT_INF )
     </select>
 
+    <select id="selRoomStatistics" parameterType="SearchDto" resultType="RoomDto">
+        SELECT MEASURE_TIME, AVG(TEMP) AS TEMP_AVG, AVG(HUM) AS HUM_AVG, AVG(DUST) AS DUST_AVG, AVG(GAS) AS GAS_AVG FROM IOT_INF
+        <where>
+            MEASURE_TIME BETWEEN "2021-05-21 00:00:00" AND "2021-05-21 23:59:59"
+            AND HOUSE_CD = 1
+            <if test="roomNo != null">AND ROOM_NO = #{roomNo}</if>
+        </where>
+        UNION
+        SELECT MEASURE_TIME, AVG(TEMP) AS TEMP_AVG, AVG(HUM) AS HUM_AVG, AVG(DUST) AS DUST_AVG, AVG(GAS) AS GAS_AVG FROM IOT_INF
+        <where>
+            MEASURE_TIME BETWEEN "2021-05-22 00:00:00" AND "2021-05-22 23:59:59"
+            AND HOUSE_CD = 1
+            <if test="roomNo != null">AND ROOM_NO = #{roomNo}</if>
+        </where>
+        UNION
+        SELECT MEASURE_TIME, AVG(TEMP) AS TEMP_AVG, AVG(HUM) AS HUM_AVG, AVG(DUST) AS DUST_AVG, AVG(GAS) AS GAS_AVG FROM IOT_INF
+        <where>
+            MEASURE_TIME BETWEEN "2021-05-23 00:00:00" AND "2021-05-23 23:59:59"
+            AND HOUSE_CD = 1
+            <if test="roomNo != null">AND ROOM_NO = #{roomNo}</if>
+        </where>
+        UNION
+        SELECT MEASURE_TIME, AVG(TEMP) AS TEMP_AVG, AVG(HUM) AS HUM_AVG, AVG(DUST) AS DUST_AVG, AVG(GAS) AS GAS_AVG FROM IOT_INF
+        <where>
+            MEASURE_TIME BETWEEN "2021-05-24 00:00:00" AND "2021-05-24 23:59:59"
+            AND HOUSE_CD = 1
+            <if test="roomNo != null">AND ROOM_NO = #{roomNo}</if>
+        </where>
+        UNION
+        SELECT MEASURE_TIME, AVG(TEMP) AS TEMP_AVG, AVG(HUM) AS HUM_AVG, AVG(DUST) AS DUST_AVG, AVG(GAS) AS GAS_AVG FROM IOT_INF
+        <where>
+            MEASURE_TIME BETWEEN "2021-05-25 00:00:00" AND "2021-05-25 23:59:59"
+            AND HOUSE_CD = 1
+            <if test="roomNo != null">AND ROOM_NO = #{roomNo}</if>
+        </where>
+        UNION
+        SELECT MEASURE_TIME, AVG(TEMP) AS TEMP_AVG, AVG(HUM) AS HUM_AVG, AVG(DUST) AS DUST_AVG, AVG(GAS) AS GAS_AVG FROM IOT_INF
+        <where>
+            MEASURE_TIME BETWEEN "2021-05-26 00:00:00" AND "2021-05-26 23:59:59"
+            AND HOUSE_CD = 1
+            <if test="roomNo != null">AND ROOM_NO = #{roomNo}</if>
+        </where>
+        UNION
+        SELECT MEASURE_TIME, AVG(TEMP) AS TEMP_AVG, AVG(HUM) AS HUM_AVG, AVG(DUST) AS DUST_AVG, AVG(GAS) AS GAS_AVG FROM IOT_INF
+        <where>
+            MEASURE_TIME BETWEEN "2021-05-27 00:00:00" AND "2021-05-27 23:59:59"
+            AND HOUSE_CD = 1
+            <if test="roomNo != null">AND ROOM_NO = #{roomNo}</if>
+        </where>
+
+    </select>
 
     <!--
     <insert id="insEmp" parameterType="EmpDto">
