@@ -142,9 +142,9 @@ public class AuthController {
                 token = jwtService.create(empId, authDto.getAuthority(), authDto.getEmpNm(), authDto.getCompCd(), loginDt);
 
                 EmpDto emp = authService.getEmpInfo(dto);
-                //emp.setToken(token);
-                //responseDto.setData(emp);
-                //responseDto.setMessage(emp.getInitUrl());
+                emp.setToken(token);
+                responseDto.setData(emp);
+                responseDto.setMessage(emp.getInitUrl());
             }
             response.setHeader(Constant.HEADER_KEY, token);
             responseDto.setResult(true);
