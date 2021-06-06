@@ -115,6 +115,7 @@ public class SearchDto extends BaseDto {
     //Room
     private int roomNo;
     private String roomNm;
+    private String houseCd;
 }
 
 
